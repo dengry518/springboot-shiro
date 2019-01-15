@@ -56,8 +56,8 @@ public class MyReam extends AuthorizingRealm {
          * SimpleHash(String algorithmName, Object source, Object salt, int hashIterations)
          */
         String algorithmName = "MD5";
-        Object source = "123";
-        Object salt = ByteSource.Util.bytes("mike");
+        Object source = "123456";
+        Object salt = ByteSource.Util.bytes("tom");
         int hashIterations = 1024;
         SimpleHash simpleHash = new SimpleHash(algorithmName, source, salt, hashIterations);
         System.out.println(simpleHash);

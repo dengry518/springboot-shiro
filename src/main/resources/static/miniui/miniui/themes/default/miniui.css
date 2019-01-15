@@ -4747,6 +4747,11 @@ body .mini-pager .mini-pager-num
     height:100%;
     background-color:#2fd85e;
 }
+
+body .mini-fileupload
+{
+    overflow:hidden;
+}
 .mini-textboxlist
 {
     width:150px;
@@ -4804,7 +4809,7 @@ body .mini-pager .mini-pager-num
     width:20px;
     height: 16px;
     margin-top:2px;
-    *+margin-top:0px; 
+    /**+margin-top:0px; */
     background:transparent;
 }
 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script th:src="@{/miniui/boot.js}" type="text/javascript"></script>
+</head>
+<body>
+<div id="loginWindow" class="mini-window" title="用户登录" style="width:330px;height:175px;" showModal="true"
+     showCloseButton="false">
+    <div id="loginForm" style="padding:15px;padding-top:10px;">
+        <table>
+            <tr>
+                <td style="width:60px;"><label for="username$text">帐号：</label></td>
+                <td>
+                    <input name="username" class="mini-textbox" requiredErrorText="账号不能为空" required="true"
+                           style="width:175px;"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:60px;"><label for="pwd$text">密码：</label></td>
+                <td>
+                    <input name="password" class="mini-password" requiredErrorText="密码不能为空" required="true"
+                           style="width:175px;"/>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding-top:5px;">
+                    <a onclick="onLoginClick" class="mini-button" style="width:60px;">登录</a>
+                    <a onclick="onResetClick" class="mini-button" style="width:60px;">重置</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+<script type="text/javascript">
+    mini.parse();
+
+    var loginWindow = mini.get("loginWindow");
+    loginWindow.show();
+
+    function onLoginClick(e) {
+        var form = new mini.Form("#loginWindow");
+
+        form.validate();
+        if (form.isValid() == false) return;
+
+        //提交数据
+        var data = form.getData();
+        var json = mini.encode(data);
+        console.log(json);
+        $.ajax({
+            url: '[[@{/user/login}]]',
+            type: "post",
+            contentType: "application/json; charset=utf-8",
+            data: json,
+            success: function (data) {
+                if (data.success) {
+                    window.location.href = '[[@{/user/toMain}]]';
+                    loginWindow.hide();
+                } else {
+                    mini.showMessageBox({
+                        showModal: false,
+                        width: 250,
+                        title: "提示",
+                        iconCls: "mini-messagebox-error",
+                        message: data.msg,
+                        timeout: 3000,
+                        x: 'right',
+                        y: 'bottom'
+                    });
+                }
+            }
+        });
+    }
+
+    function onResetClick(e) {
+        var form = new mini.Form("#loginWindow");
+        form.clear();
+    }
+</script>
+</body>
+</html>

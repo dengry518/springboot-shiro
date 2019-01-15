@@ -35,13 +35,13 @@ public class ShiroConfig {
      *
      * @return
      */
-    @Bean
+    /*@Bean
     public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator creator = new DefaultAdvisorAutoProxyCreator();
         //controller的方法采用cglib生成aop
         creator.setProxyTargetClass(true);
         return creator;
-    }
+    }*/
 
 
     /**
@@ -52,11 +52,16 @@ public class ShiroConfig {
         DefaultShiroFilterChainDefinition defaultShiroFilterChainDefinition = new DefaultShiroFilterChainDefinition();
 
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap();
-        filterChainDefinitionMap.put("/toLogin", "anon");
-        filterChainDefinitionMap.put("/login", "anon");
+        //静态资源不拦截
+        filterChainDefinitionMap.put("/miniui/**", "anon");
+        //跳转到登录页不拦截
+        filterChainDefinitionMap.put("/user/toLogin", "anon");
+        //登录请求不拦截
+        filterChainDefinitionMap.put("/user/login", "anon");
+
         filterChainDefinitionMap.put("/logout", "logout");
-//        filterChainDefinitionMap.put("/toAdmin", "roles[admin]");
-//        filterChainDefinitionMap.put("/toUser", "roles[user]");
+        filterChainDefinitionMap.put("/toAdmin", "roles[admin]");
+        filterChainDefinitionMap.put("/toUser", "roles[user]");
         filterChainDefinitionMap.put("/**", "authc");
         defaultShiroFilterChainDefinition.addPathDefinitions(filterChainDefinitionMap);
         return defaultShiroFilterChainDefinition;

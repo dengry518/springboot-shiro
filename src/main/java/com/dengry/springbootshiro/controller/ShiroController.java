@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +17,12 @@ public class ShiroController {
     }
 
 
-    @RequiresRoles({"admin"})
+//    @RequiresRoles({"admin"})
     @RequestMapping("/toAdmin")
     public String toAdmin() {
         return "admin";
     }
-    @RequiresRoles(value = {"user","admin"},logical = Logical.OR)
+//    @RequiresRoles(value = {"user","admin"},logical = Logical.OR)
     @RequestMapping("/toUser")
     public String toUser() {
         return "user";
