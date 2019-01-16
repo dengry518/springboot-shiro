@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script th:src="@{/miniui/boot.js}" type="text/javascript"></script>
+</head>
+<body>
+<a class="mini-button" iconCls="icon-add" onclick="addRoot">增加根节点</a>
+<a class="mini-button" iconCls="icon-addnew" onclick="addNode">增加子节点</a>
+<a class="mini-button" iconCls="icon-remove" onclick="delNode">删除节点</a>
+<a class="mini-button" iconCls="icon-edit" onclick="editNode">修改节点</a>
+<ul id="menuTree" class="mini-tree" url="/node/findLeftTree" style="width:250px;padding:5px;margin-top: 5px"
+    textField="text" idField="id" parentField="pid" resultAsTree="false" expandOnLoad="true">
+</ul>
+<script type="text/javascript">
+    mini.parse();
+
+    function editNode(e) {
+        var tree = mini.get("menuTree");
+        var node = tree.getSelectedNode();
+        if (node) {
+            mini.open({
+                url: "/menu/updateNode",
+                title: "任务面板",
+                width: 500,
+                height: 300,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    iframe.contentWindow.SetData(node);
+                }
+            })
+        } else {
+            mini.alert("请选择一个节点！");
+        }
+    }
+
+    function delNode(e) {
+        var tree = mini.get("menuTree");
+        var node = tree.getSelectedNode();
+        if (node) {
+            mini.confirm("确定删除记录？", "确定？",
+                function (action) {
+                    if (action == "ok") {
+                        var newNode = {id: node.id};
+                        $.ajax({
+                            url: "/menu/delNode",
+                            data: newNode,
+                            type: "post",
+                            success: function (data) {
+                                if (data.success) {
+                                    tree.load("/menu/findLeftTree");
+                                } else {
+                                    mini.alert(data.msg);
+                                }
+                            }
+                        });
+                    }
+                }
+            );
+        } else {
+            mini.alert("请选择一个节点！");
+        }
+    }
+
+    //增加根节点
+    function addRoot(e) {
+        mini.open({
+            url: "/node/toAddRoot",
+            title: "任务面板",
+            width: 500,
+            height: 300
+        })
+    }
+
+    //增加子节点
+    function addNode(e) {
+        var tree = mini.get("menuTree");
+        var node = tree.getSelectedNode();
+        if (node) {
+            mini.open({
+                url: "/node/toAddNode",
+                title: "任务面板",
+                width: 500,
+                height: 300,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var newNode = {pid: node.id};
+                    iframe.contentWindow.SetData(newNode);
+                }
+            })
+        } else {
+            mini.alert("请选择一个节点！");
+        }
+
+    }
+
+    function saveData(options) {
+        var tree = mini.get("menuTree");
+        options = mini.clone(options);
+        $.ajax({
+            url: "/node/addNode",
+            data: options,
+            type: "post",
+            success: function (data) {
+                if (data.succ) {
+                    tree.load("/node/findLeftTree");
+                } else {
+                    mini.alert("出现异常！");
+                }
+            }
+        });
+    }
+
+    function updateData(options) {
+        var tree = mini.get("menuTree");
+        options = mini.clone(options);
+        $.ajax({
+            url: "/menu/updateNode",
+            data: options,
+            type: "post",
+            success: function (data) {
+                if (data.success) {
+                    tree.load("/menu/findLeftTree");
+                } else {
+                    mini.alert("出现异常！");
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -57,7 +57,7 @@
             contentType: "application/json; charset=utf-8",
             data: json,
             success: function (data) {
-                if (data.success) {
+                if (data.succ) {
                     window.location.href = '[[@{/user/toMain}]]';
                     loginWindow.hide();
                 } else {
@@ -65,7 +65,7 @@
                         showModal: false,
                         width: 250,
                         title: "提示",
-                        iconCls: "mini-messagebox-error",
+                        iconCls: "mini-messagebox-warning",
                         message: data.msg,
                         timeout: 3000,
                         x: 'right',

@@ -18,8 +18,6 @@ import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
-
-
     @Bean
     public Realm realm() {
         MyReam myReam = new MyReam();
@@ -58,10 +56,11 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/user/toLogin", "anon");
         //登录请求不拦截
         filterChainDefinitionMap.put("/user/login", "anon");
+        filterChainDefinitionMap.put("/user/logout", "logout");
 
-        filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/toAdmin", "roles[admin]");
         filterChainDefinitionMap.put("/toUser", "roles[user]");
+
         filterChainDefinitionMap.put("/**", "authc");
         defaultShiroFilterChainDefinition.addPathDefinitions(filterChainDefinitionMap);
         return defaultShiroFilterChainDefinition;

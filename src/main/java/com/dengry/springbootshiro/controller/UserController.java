@@ -1,15 +1,13 @@
 package com.dengry.springbootshiro.controller;
 
 import com.dengry.springbootshiro.entity.User;
-import com.dengry.springbootshiro.utils.Result;
+import com.dengry.springbootshiro.valueObject.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,32 +29,25 @@ public class UserController {
 
     @PostMapping("/login")
     @ResponseBody
-    public Result login(@RequestBody User user) {
-        Result result = new Result();
-        result.setSuccess(true);
+    public Json login(@RequestBody User user) {
+        String oper = "user login";
+        log.info("{}, body: {}", oper, user);
+        //后台校验
+        String username = user.getUsername();
+        String password = user.getPassword();
+        if (StringUtils.isEmpty(username)) {
+            return Json.fail(oper, "用户名不能为空");
+        }
+        if (StringUtils.isEmpty(password)) {
+            return Json.fail(oper, "密码不能为空");
+        }
+
+        // 执行登录认证.
         Subject currentUser = SecurityUtils.getSubject();
         if (!currentUser.isAuthenticated()) {
-            UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
-            try {
-                // 执行登录.
-                currentUser.login(token);
-            } catch (UnknownAccountException e) {
-                log.debug("登录失败:{}", e.getMessage());
-                result.setSuccess(false);
-                result.setId(1);
-                result.setMsg("用户不存在");
-            } catch (IncorrectCredentialsException e) {
-                log.debug("登录失败:{}", e.getMessage());
-                result.setSuccess(false);
-                result.setId(2);
-                result.setMsg("密码不正确");
-            } catch (AuthenticationException e) {
-                log.debug("登录失败:{}", e.getMessage());
-                result.setSuccess(false);
-                result.setId(3);
-                result.setMsg("其他异常");
-            }
+            UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+            currentUser.login(token);
         }
-        return result;
+        return Json.succ(oper);
     }
 }
