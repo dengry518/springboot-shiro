@@ -91,4 +91,16 @@ public class MyServiceImpl implements MyService {
         map.put("data", brands);
         return map;
     }
+
+    @Override
+    public void addRole(Role role) {
+        roleDao.save(role);
+    }
+
+    @Override
+    public void delRoleByIds(Integer[] ids) {
+        for (Integer id : ids) {
+            roleDao.deleteById(id);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.dengry.springbootshiro.service;
 
+import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.valueObject.Node;
 
@@ -22,4 +23,8 @@ public interface MyService {
     void addNode(Node node);
 
     void delNode(Integer id);
+
+    void addRole(Role role);
+
+    void delRoleByIds(Integer[] ids);
 }

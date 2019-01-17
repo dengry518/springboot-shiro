@@ -25,7 +25,7 @@
     </div>
 </div>
 <div id="datagrid1" class="mini-datagrid" style="width:800px;height:280px;" allowResize="true"
-     url="/role/findData" idField="id" multiSelect="true">
+     url="/role/findRoles" idField="id" multiSelect="true">
     <div property="columns">
         <div type="checkcolumn"></div>
         <div field="name" width="120" headerAlign="center" allowSort="true">角色名</div>
@@ -39,7 +39,6 @@
     //初始查询一次
     search();
 
-
     function search() {
         var name = mini.get("name").getValue();
         grid.load({name: name});
@@ -47,9 +46,9 @@
 
     function add() {
         mini.open({
-            url: "/role/toSave",
+            url: "/role/toAdd",
             title: "新增角色",
-            width: 600,
+            width: 350,
             height: 200,
             onload: function () {
                 var iframe = this.getIFrameEl();
@@ -64,20 +63,19 @@
 
     function edit() {
         var row = grid.getSelecteds();
-        if (row.length==1) {
+        if (row.length == 1) {
             mini.open({
-                url: "/role/toSave",
+                url: "/role/toAdd",
                 title: "编辑角色",
-                width: 600,
-                height: 400,
+                width: 350,
+                height: 200,
                 onload: function () {
                     var iframe = this.getIFrameEl();
-                    var data = { action: "edit", id: row[0].id };
+                    var data = {action: "edit", id: row[0].id, name: row[0].name};
                     iframe.contentWindow.SetData(data);
                 },
                 ondestroy: function (action) {
                     grid.reload();
-
                 }
             });
 
@@ -102,7 +100,7 @@
                             url: "/role/delByIds",
                             data: {"ids": ids},
                             success: function (data) {
-                                if (data.success) {
+                                if (data.succ) {
                                     grid.reload();
                                 }
                             }

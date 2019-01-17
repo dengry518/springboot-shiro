@@ -73,7 +73,46 @@
                     <fork>true</fork> <!-- 如果没有该配置，devtools不会生效 -->
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                    <webResources>
+                        <resource>
+                            <directory>${basedir}/src/main/webapp</directory>
+                            <targetPath />
+                            <filtering>true</filtering>
+                            <excludes>
+                                <exclude>**/*.woff</exclude>
+                                <exclude>**/*.woff2</exclude>
+                                <exclude>**/*.ttf</exclude>
+                            </excludes>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
         </plugins>
+        <!--
+            解决:Failed to decode downloaded font 和 OTS parsing error: Failed to convert WOFF 2.0 font to SFNT
+            导致图标出不来的问题
+        -->
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>static/miniui/**</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>static/miniui/**</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
 </project>
