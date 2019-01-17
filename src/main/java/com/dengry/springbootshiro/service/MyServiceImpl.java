@@ -34,6 +34,11 @@ public class MyServiceImpl implements MyService {
     RoleDao roleDao;
 
     @Override
+    public void delNode(Integer id) {
+        nodeDao.deleteById(id);
+    }
+
+    @Override
     public User findUserByUsername(String username) {
         return userDao.findUserByUsername(username);
     }

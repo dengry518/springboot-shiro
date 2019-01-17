@@ -46,4 +46,16 @@ public class NodeController {
     public String toAddNode() {
         return "node/addNode";
     }
+
+    @RequestMapping("/delNode")
+    @ResponseBody
+    public Json delNode(Integer id) {
+        myService.delNode(id);
+        return Json.succ();
+    }
+
+    @RequestMapping("/toUpdateNode")
+    public String toUpdateNode() {
+        return "node/updateNode";
+    }
 }

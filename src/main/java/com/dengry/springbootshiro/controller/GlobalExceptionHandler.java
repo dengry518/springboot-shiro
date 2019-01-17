@@ -8,6 +8,7 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -55,6 +56,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     public Json page403() {
         return new Json("403", false, Codes.UNAUTHZ, "用户没有访问权限", null);
+    }
+
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseBody
+    public Json handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        String eName = e.getClass().getSimpleName();
+        return new Json(eName, false, Codes.SERVER_ERR, "数据完整性异常", null);
     }
 
     @ExceptionHandler(Exception.class)

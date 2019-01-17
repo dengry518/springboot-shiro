@@ -21,7 +21,7 @@
         var node = tree.getSelectedNode();
         if (node) {
             mini.open({
-                url: "/menu/updateNode",
+                url: "/node/toUpdateNode",
                 title: "任务面板",
                 width: 500,
                 height: 300,
@@ -44,12 +44,12 @@
                     if (action == "ok") {
                         var newNode = {id: node.id};
                         $.ajax({
-                            url: "/menu/delNode",
+                            url: "/node/delNode",
                             data: newNode,
                             type: "post",
                             success: function (data) {
-                                if (data.success) {
-                                    tree.load("/menu/findLeftTree");
+                                if (data.succ) {
+                                    tree.load("/node/findLeftTree");
                                 } else {
                                     mini.alert(data.msg);
                                 }
@@ -95,6 +95,7 @@
 
     }
 
+    //增加或者修改
     function saveData(options) {
         var tree = mini.get("menuTree");
         options = mini.clone(options);
@@ -105,23 +106,6 @@
             success: function (data) {
                 if (data.succ) {
                     tree.load("/node/findLeftTree");
-                } else {
-                    mini.alert("出现异常！");
-                }
-            }
-        });
-    }
-
-    function updateData(options) {
-        var tree = mini.get("menuTree");
-        options = mini.clone(options);
-        $.ajax({
-            url: "/menu/updateNode",
-            data: options,
-            type: "post",
-            success: function (data) {
-                if (data.success) {
-                    tree.load("/menu/findLeftTree");
                 } else {
                     mini.alert("出现异常！");
                 }

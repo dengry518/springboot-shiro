@@ -20,4 +20,6 @@ public interface MyService {
     Map<String, Object> findRoles(String name, Integer pageIndex, Integer pageSize);
 
     void addNode(Node node);
+
+    void delNode(Integer id);
 }
