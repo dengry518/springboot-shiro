@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script th:src="@{/miniui/boot.js}" type="text/javascript"></script>
+    <script type="text/javascript">
+        <!--解决session过期,登录页内嵌iframe-->
+        if (window != top)
+            top.location.href = location.href;
+    </script>
 </head>
 <body>
 <div id="loginWindow" class="mini-window" title="用户登录" style="width:330px;height:175px;" showModal="true"

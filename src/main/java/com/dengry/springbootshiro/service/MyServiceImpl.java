@@ -10,15 +10,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.*;
 
 @Transactional
@@ -39,6 +35,17 @@ public class MyServiceImpl implements MyService {
     @Override
     public Role findRoleById(Integer id) {
         Optional<Role> optional = roleDao.findById(id);
+        return optional.get();
+    }
+
+    @Override
+    public void addUser(User user) {
+        userDao.save(user);
+    }
+
+    @Override
+    public User findUserById(Integer id) {
+        Optional<User> optional = userDao.findById(id);
         return optional.get();
     }
 
@@ -76,23 +83,38 @@ public class MyServiceImpl implements MyService {
     @Override
     public Map<String, Object> findRoles(String name, Integer pageIndex, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(pageIndex, pageSize);
-        Page<Role> page = roleDao.findAll(new Specification<Role>() {
-            @Override
-            public Predicate toPredicate(Root<Role> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList<>();
-                if (!StringUtils.isEmpty(name)) {
-                    predicates.add(criteriaBuilder.like(root.get("name"), "%" + name + "%"));
-                }
-                criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
-                return null;
+        Page<Role> page = roleDao.findAll((root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (!StringUtils.isEmpty(name)) {
+                predicates.add(cb.like(root.get("name"), "%" + name + "%"));
             }
+            query.where(predicates.toArray(new Predicate[predicates.size()]));
+            return null;
         }, pageRequest);
 
+        return page2Map(page);
+    }
+
+    @Override
+    public Map<String, Object> findUsers(String username, Integer pageIndex, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageIndex, pageSize);
+        Page<User> page = userDao.findAll((root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (!StringUtils.isEmpty(username)) {
+                predicates.add(cb.like(root.get("username"), "%" + username + "%"));
+            }
+            query.where(predicates.toArray(new Predicate[predicates.size()]));
+            return null;
+        }, pageRequest);
+        return page2Map(page);
+    }
+
+    public <T extends Object> Map<String, Object> page2Map(Page<T> page) {
         Map<String, Object> map = new HashMap();
-        List<Role> brands = page.getContent();
+        List<T> content = page.getContent();
         long totalElements = page.getTotalElements();
         map.put("total", totalElements);
-        map.put("data", brands);
+        map.put("data", content);
         return map;
     }
 
@@ -102,9 +124,16 @@ public class MyServiceImpl implements MyService {
     }
 
     @Override
-    public void delRoleByIds(Integer[] ids) {
+    public void delRolesByIds(Integer[] ids) {
         for (Integer id : ids) {
             roleDao.deleteById(id);
+        }
+    }
+
+    @Override
+    public void delUsersByIds(Integer[] ids) {
+        for (Integer id : ids) {
+            userDao.deleteById(id);
         }
     }
 }

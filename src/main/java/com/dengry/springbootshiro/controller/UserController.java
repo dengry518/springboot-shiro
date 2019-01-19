@@ -1,22 +1,26 @@
 package com.dengry.springbootshiro.controller;
 
 import com.dengry.springbootshiro.entity.User;
+import com.dengry.springbootshiro.service.MyService;
 import com.dengry.springbootshiro.valueObject.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @Controller
 @RequestMapping("/user")
 public class UserController {
+    @Autowired
+    MyService myService;
+
     @RequestMapping("/toLogin")
     public String toLogin() {
         return "user/login";
@@ -49,5 +53,42 @@ public class UserController {
             currentUser.login(token);
         }
         return Json.succ(oper);
+    }
+
+    @RequestMapping("/toList")
+    public String toList() {
+        return "user/list";
+    }
+
+    @RequestMapping("/findUsers")
+    @ResponseBody
+    public Map findUsers(String username, Integer pageIndex, Integer pageSize) {
+        return myService.findUsers(username, pageIndex, pageSize);
+    }
+
+    @RequestMapping("/toAdd")
+    public String toAdd() {
+        return "user/add";
+    }
+
+    @RequestMapping("/add")
+    @ResponseBody
+    public Json add(User user) {
+        log.debug("user is {}", user);
+        myService.addUser(user);
+        return Json.succ();
+    }
+
+    @RequestMapping("/findUserById/{id}")
+    @ResponseBody
+    public User findUserById(@PathVariable("id") Integer id) {
+        return myService.findUserById(id);
+    }
+
+    @RequestMapping("/delByIds")
+    @ResponseBody
+    public Json delByIds(@RequestParam("ids[]") Integer[] ids) {
+        myService.delUsersByIds(ids);
+        return Json.succ();
     }
 }

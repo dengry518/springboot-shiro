@@ -20,13 +20,21 @@ public interface MyService {
 
     Map<String, Object> findRoles(String name, Integer pageIndex, Integer pageSize);
 
+    Map<String, Object> findUsers(String username, Integer pageIndex, Integer pageSize);
+
     void addNode(Node node);
 
     void delNode(Integer id);
 
     void addRole(Role role);
 
-    void delRoleByIds(Integer[] ids);
+    void delRolesByIds(Integer[] ids);
+
+    void delUsersByIds(Integer[] ids);
 
     Role findRoleById(Integer id);
+
+    void addUser(User user);
+
+    User findUserById(Integer id);
 }

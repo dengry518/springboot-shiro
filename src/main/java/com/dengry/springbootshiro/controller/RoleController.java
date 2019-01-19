@@ -46,7 +46,7 @@ public class RoleController {
     @RequestMapping("/delByIds")
     @ResponseBody
     public Json delByIds(@RequestParam("ids[]")Integer[] ids) {
-        myService.delRoleByIds(ids);
+        myService.delRolesByIds(ids);
         return Json.succ();
     }
 }
