@@ -35,6 +35,7 @@ public class Node implements Serializable {
     private Node parent;
 
     @ManyToMany(mappedBy = "nodes")
+    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
 

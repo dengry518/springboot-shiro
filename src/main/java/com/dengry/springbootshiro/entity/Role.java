@@ -2,6 +2,7 @@ package com.dengry.springbootshiro.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 @Setter
 @Getter
+@ToString
 @Entity
 @Table(name = "t_role")
 public class Role implements Serializable {

@@ -13,15 +13,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Transactional
 @Service
@@ -36,6 +34,12 @@ public class MyServiceImpl implements MyService {
     @Override
     public void delNode(Integer id) {
         nodeDao.deleteById(id);
+    }
+
+    @Override
+    public Role findRoleById(Integer id) {
+        Optional<Role> optional = roleDao.findById(id);
+        return optional.get();
     }
 
     @Override
@@ -76,7 +80,7 @@ public class MyServiceImpl implements MyService {
             @Override
             public Predicate toPredicate(Root<Role> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
-                if (!name.equals("")) {
+                if (!StringUtils.isEmpty(name)) {
                     predicates.add(criteriaBuilder.like(root.get("name"), "%" + name + "%"));
                 }
                 criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));

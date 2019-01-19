@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script th:src="@{/miniui/boot.js}" type="text/javascript"></script>
+</head>
+<body>
+
+<div id="datagrid1" class="mini-datagrid" style="width:800px;height:280px;" allowResize="true"
+     url="/role/findRoles" idField="id" multiSelect="true">
+    <div property="columns">
+        <div field="name" width="120" headerAlign="center" allowSort="true">角色名</div>
+        <div field="nodes" width="200" headerAlign="center" allowSort="true" renderer="onNodesRenderer">拥有菜单节点</div>
+        <div name="action" width="120" headerAlign="center" align="center" renderer="onActionRenderer"
+             cellStyle="padding:0;">分配
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    mini.parse();
+
+    var grid = mini.get("datagrid1");
+    grid.load();
+
+    function onActionRenderer(e) {
+        var record = e.record;
+        var uid = record.id;
+        var nodes = record.nodes;
+        var nodeIds = [];
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            nodeIds.push(node.id)
+        }
+        var s = nodeIds.join();
+        var r='<a href="javascript:grantNodes(\''+uid+'\',\''+s+'\')">分配</a>';
+        return r;
+    }
+
+
+    function onNodesRenderer(e) {
+        var record = e.record;
+        console.log(record.nodes);
+        var nodes = record.nodes;
+        var nodeNames = [];
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            nodeNames.push(node.text)
+        }
+        var s = nodeNames.join();
+        return s;
+    }
+
+    function grantNodes(roleId,nodeIds) {
+        mini.open({
+            url: "/permission/multiSelectTree",
+            title: "分配节点",
+            width: 350,
+            height: 350,
+            onload: function () {
+                var iframe = this.getIFrameEl();
+                iframe.contentWindow.SetData(nodeIds);
+            },
+            ondestroy: function (action) {
+                if (action == "ok") {
+                    var iframe = this.getIFrameEl();
+                    var data = iframe.contentWindow.GetData();
+                    data = mini.clone(data);
+                    console.log(data);
+                    var d = {};
+                    d.roleId = roleId;
+                    d.nodeIds = data.id;
+                    $.ajax({
+                        url: "/permission/grantNodes",
+                        data: d,
+                        success: function (data) {
+                            if (data.succ) {
+                                grid.reload();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

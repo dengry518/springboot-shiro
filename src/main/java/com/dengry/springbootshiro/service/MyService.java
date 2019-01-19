@@ -27,4 +27,6 @@ public interface MyService {
     void addRole(Role role);
 
     void delRoleByIds(Integer[] ids);
+
+    Role findRoleById(Integer id);
 }
