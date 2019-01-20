@@ -5,6 +5,7 @@ import com.dengry.springbootshiro.dao.RoleDao;
 import com.dengry.springbootshiro.dao.UserDao;
 import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
+import com.dengry.springbootshiro.utils.CustomUtil;
 import com.dengry.springbootshiro.valueObject.Node;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,17 +58,20 @@ public class MyServiceImpl implements MyService {
     @Override
     public List<Node> findLeftTree() {
         List<com.dengry.springbootshiro.entity.Node> nodes = nodeDao.findAll();
-        List<Node> nodeList = new ArrayList<>();
-        for (com.dengry.springbootshiro.entity.Node node : nodes) {
-            Node n = new Node();
-            BeanUtils.copyProperties(node, n);
-            if (node.getParent() != null) {
-                n.setPid(node.getParent().getId());
-            }
-            nodeList.add(n);
-        }
-        return nodeList;
+        return CustomUtil.nodePo2Vo(nodes);
     }
+
+    @Override
+    public List<com.dengry.springbootshiro.entity.Node> findLeftTree(Integer roleId) {
+        List<Integer> nodeIds = nodeDao.findNodeIdByRoleId(roleId);
+        List<com.dengry.springbootshiro.entity.Node> nodes = new ArrayList<>();
+        for (Integer nodeId : nodeIds) {
+            Optional<com.dengry.springbootshiro.entity.Node> optional = nodeDao.findById(nodeId);
+            nodes.add(optional.get());
+        }
+        return nodes;
+    }
+
 
     @Override
     public void addNode(Node node) {

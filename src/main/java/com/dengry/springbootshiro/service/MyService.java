@@ -17,6 +17,14 @@ public interface MyService {
      */
     List<Node> findLeftTree();
 
+    /**
+     * 角色不同，导航树不同(查询role_node表)
+     *
+     * @param roleId
+     * @return
+     */
+    List<com.dengry.springbootshiro.entity.Node> findLeftTree(Integer roleId);
+
 
     Map<String, Object> findRoles(String name, Integer pageIndex, Integer pageSize);
 

@@ -7,7 +7,9 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -20,6 +22,7 @@ public class Role implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    private String shortName;
 
     @OneToMany(mappedBy = "role")
     @JsonIgnore
@@ -40,7 +43,7 @@ public class Role implements Serializable {
     @ManyToMany
     @JoinTable(name = "role_node", joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "node_id", referencedColumnName = "id")})
-    private Set<Node> nodes = new HashSet<>();
+    private List<Node> nodes = new ArrayList<>();
 
 
 }

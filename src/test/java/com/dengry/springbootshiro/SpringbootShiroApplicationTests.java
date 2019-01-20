@@ -1,5 +1,6 @@
 package com.dengry.springbootshiro;
 
+import com.dengry.springbootshiro.dao.NodeDao;
 import com.dengry.springbootshiro.service.MyService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -17,6 +20,8 @@ public class SpringbootShiroApplicationTests {
 
     @Autowired
     MyService myService;
+    @Autowired
+    NodeDao nodeDao;
 
     @Test
     public void contextLoads() {
@@ -37,6 +42,10 @@ public class SpringbootShiroApplicationTests {
         int hashIterations = 1024;
         SimpleHash simpleHash = new SimpleHash(algorithmName, source, salt, hashIterations);
         System.out.println(simpleHash.toString());
+    }
+    @Test
+    public void findNodeIdByRoleId(){
+        List<Integer> integers = nodeDao.findNodeIdByRoleId(1);
     }
 
 

@@ -3,6 +3,7 @@ package com.dengry.springbootshiro.reams;
 import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.service.MyService;
+import com.dengry.springbootshiro.valueObject.Node;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -13,6 +14,7 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -46,7 +48,7 @@ public class CustomReam extends AuthorizingRealm {
          */
         SimpleAuthenticationInfo simpleAuthenticationInfo = null;//new SimpleAuthenticationInfo(user, user.getPassword(), getName());
         ByteSource credentialsSalt = ByteSource.Util.bytes(username); //盐值
-        simpleAuthenticationInfo = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), credentialsSalt, getName());
+        simpleAuthenticationInfo = new SimpleAuthenticationInfo(user, user.getPassword(), credentialsSalt, getName());
         return simpleAuthenticationInfo;
     }
 
@@ -63,9 +65,13 @@ public class CustomReam extends AuthorizingRealm {
         User user = (User) principals.getPrimaryPrincipal();
         //2. 利用登录的用户的信息来用户当前用户的角色或权限(可能需要查询数据库)
         Role role = user.getRole();
-        log.debug("role名:{}", role.getName());
+        log.debug("role名:{}", role.getShortName());
         Set<String> roles = new HashSet<>();
-        roles.add(role.getName());
+        roles.add(role.getShortName());
+
+        //2.1根据角色去role_node表中查询node
+        List<com.dengry.springbootshiro.entity.Node> nodes = myService.findLeftTree(role.getId());
+        role.setNodes(nodes);
         //3. 创建 SimpleAuthorizationInfo, 并设置其 roles 属性.
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.setRoles(roles);

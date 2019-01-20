@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -38,7 +40,7 @@ public class PermissionController {
     @ResponseBody
     public Json grantNodes(@RequestParam("roleId") Integer roleId, @RequestParam("nodeIds") Integer[] nodeIds) {
         Role role = myService.findRoleById(roleId);
-        Set<Node> nodes = new HashSet<>();
+        List<Node> nodes = new ArrayList<>();
         for (Integer nodeId : nodeIds) {
             Node node = new Node();
             node.setId(nodeId);

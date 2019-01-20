@@ -3,6 +3,7 @@ package com.dengry.springbootshiro.controller;
 import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.service.MyService;
+import com.dengry.springbootshiro.utils.CustomUtil;
 import com.dengry.springbootshiro.valueObject.Json;
 import com.dengry.springbootshiro.valueObject.Node;
 import lombok.extern.slf4j.Slf4j;
@@ -24,29 +25,30 @@ public class NodeController {
     @Autowired
     MyService myService;
 
+    /**
+     * 所有树节点
+     *
+     * @return
+     */
     @RequestMapping("/findLeftTree")
     @ResponseBody
     public List<Node> findLeftTree() {
         return myService.findLeftTree();
     }
 
+    /**
+     * 不同角色不同节点
+     *
+     * @return
+     */
     @RequestMapping("/findLeftTree2")
     @ResponseBody
     public List<Node> findLeftTree2() {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         Role role = user.getRole();
-        Set<com.dengry.springbootshiro.entity.Node> nodes = role.getNodes();
-
-        List<Node> nodeList = new ArrayList<>();
-        for (com.dengry.springbootshiro.entity.Node node : nodes) {
-            Node n = new Node();
-            BeanUtils.copyProperties(node, n);
-            if (node.getParent() != null) {
-                n.setPid(node.getParent().getId());
-            }
-            nodeList.add(n);
-        }
-        return nodeList;
+        List<com.dengry.springbootshiro.entity.Node> nodeList = role.getNodes();
+        List<Node> nodes = CustomUtil.nodePo2Vo(nodeList);
+        return nodes;
     }
 
     @RequestMapping("/toMenu")
