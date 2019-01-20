@@ -1,13 +1,15 @@
 package com.dengry.springbootshiro;
 
-import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.service.MyService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -15,12 +17,6 @@ public class SpringbootShiroApplicationTests {
 
     @Autowired
     MyService myService;
-    @Test
-    public void findRoleById() {
-        Role role = myService.findRoleById(2);
-        System.out.println(role);
-    }
-
 
     @Test
     public void contextLoads() {
@@ -31,6 +27,16 @@ public class SpringbootShiroApplicationTests {
         log.info("这是一个info日志...");
         log.warn("这是一个warn日志...");
         log.error("这是一个error日志...");
+    }
+
+    @Test
+    public void gm() {
+        String algorithmName = "MD5";
+        Object source = "123456";
+        Object salt = ByteSource.Util.bytes("tom");
+        int hashIterations = 1024;
+        SimpleHash simpleHash = new SimpleHash(algorithmName, source, salt, hashIterations);
+        System.out.println(simpleHash.toString());
     }
 
 

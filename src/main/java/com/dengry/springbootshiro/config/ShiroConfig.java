@@ -1,7 +1,7 @@
 package com.dengry.springbootshiro.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
-import com.dengry.springbootshiro.reams.MyReam;
+import com.dengry.springbootshiro.reams.CustomReam;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
@@ -9,7 +9,6 @@ import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,12 +19,12 @@ import java.util.Map;
 public class ShiroConfig {
     @Bean
     public Realm realm() {
-        MyReam myReam = new MyReam();
+        CustomReam customReam = new CustomReam();
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
         hashedCredentialsMatcher.setHashAlgorithmName("MD5");
         hashedCredentialsMatcher.setHashIterations(1024);
-        myReam.setCredentialsMatcher(hashedCredentialsMatcher);
-        return myReam;
+        customReam.setCredentialsMatcher(hashedCredentialsMatcher);
+        return customReam;
     }
 
     /**

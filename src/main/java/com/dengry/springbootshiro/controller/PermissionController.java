@@ -2,6 +2,7 @@ package com.dengry.springbootshiro.controller;
 
 import com.dengry.springbootshiro.entity.Node;
 import com.dengry.springbootshiro.entity.Role;
+import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.service.MyService;
 import com.dengry.springbootshiro.valueObject.Json;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,9 @@ public class PermissionController {
     /**
      * 给角色赋node
      */
-    @RequestMapping("/toList")
+    @RequestMapping("/toRoleNodes")
     public String toList() {
-        return "permission/roleList";
+        return "permission/roleNode";
     }
 
     @RequestMapping("/multiSelectTree")
@@ -45,6 +46,26 @@ public class PermissionController {
         }
         role.setNodes(nodes);
         myService.addRole(role);
+        return Json.succ();
+    }
+
+    @RequestMapping("/toUserRole")
+    public String toUserRole() {
+        return "permission/userRole";
+    }
+
+    @RequestMapping("/toSelectRole")
+    public String toSelectRole() {
+        return "permission/selectRole";
+    }
+
+
+    @RequestMapping("/grantRoles")
+    @ResponseBody
+    public Json grantRoles(@RequestParam("userId") Integer userId, @RequestParam("roleId") Integer roleId) {
+        User user = myService.findUserById(userId);
+        user.setRole(new Role(roleId));
+        myService.addUser(user);
         return Json.succ();
     }
 }

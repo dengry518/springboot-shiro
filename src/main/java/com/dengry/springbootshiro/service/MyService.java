@@ -37,4 +37,6 @@ public interface MyService {
     void addUser(User user);
 
     User findUserById(Integer id);
+
+    void updateUser(User user);
 }

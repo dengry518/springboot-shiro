@@ -1,18 +1,24 @@
 package com.dengry.springbootshiro.controller;
 
+import com.dengry.springbootshiro.entity.Node;
+import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.service.MyService;
 import com.dengry.springbootshiro.valueObject.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Controller
@@ -75,6 +81,15 @@ public class UserController {
     @ResponseBody
     public Json add(User user) {
         log.debug("user is {}", user);
+
+        //MD5加密,新用户原始密码都是123456
+        String algorithmName = "MD5";
+        Object source = "123456";
+        Object salt = ByteSource.Util.bytes(user.getUsername());
+        int hashIterations = 1024;
+        SimpleHash simpleHash = new SimpleHash(algorithmName, source, salt, hashIterations);
+        user.setPassword(simpleHash.toString());
+
         myService.addUser(user);
         return Json.succ();
     }
@@ -91,4 +106,5 @@ public class UserController {
         myService.delUsersByIds(ids);
         return Json.succ();
     }
+
 }

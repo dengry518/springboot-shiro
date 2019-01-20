@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+
 @Setter
 @Getter
 @ToString
@@ -20,20 +21,26 @@ public class Role implements Serializable {
     private Integer id;
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
+    @OneToMany(mappedBy = "role")
     @JsonIgnore
-    private Set<User> users=new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
+    public Role() {
+    }
+
+    public Role(Integer id) {
+        this.id = id;
+    }
 
     @ManyToMany
     @JoinTable(name = "role_resource", joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "resource_id", referencedColumnName = "id")})
-    private Set<Resource> resources=new HashSet<>();
+    private Set<Resource> resources = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "role_node", joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "node_id", referencedColumnName = "id")})
-    private Set<Node> nodes=new HashSet<>();
+    private Set<Node> nodes = new HashSet<>();
 
 
 }

@@ -1,12 +1,12 @@
 package com.dengry.springbootshiro.reams;
 
+import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.service.MyService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.crypto.hash.SimpleHash;
-import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashSet;
 import java.util.Set;
 
-
-public class MyReam extends AuthorizingRealm {
+@Slf4j
+public class CustomReam extends AuthorizingRealm {
     @Autowired
     MyService myService;
 
@@ -46,22 +46,10 @@ public class MyReam extends AuthorizingRealm {
          */
         SimpleAuthenticationInfo simpleAuthenticationInfo = null;//new SimpleAuthenticationInfo(user, user.getPassword(), getName());
         ByteSource credentialsSalt = ByteSource.Util.bytes(username); //盐值
-        simpleAuthenticationInfo = new SimpleAuthenticationInfo(username, user.getPassword(), credentialsSalt, getName());
+        simpleAuthenticationInfo = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), credentialsSalt, getName());
         return simpleAuthenticationInfo;
     }
 
-
-    public static void main(String[] args) {
-        /**
-         * SimpleHash(String algorithmName, Object source, Object salt, int hashIterations)
-         */
-        String algorithmName = "MD5";
-        Object source = "123456";
-        Object salt = ByteSource.Util.bytes("tom");
-        int hashIterations = 1024;
-        SimpleHash simpleHash = new SimpleHash(algorithmName, source, salt, hashIterations);
-        System.out.println(simpleHash);
-    }
 
     /**
      * 授权
@@ -72,15 +60,15 @@ public class MyReam extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         //1. 从 PrincipalCollection 中来获取登录用户的信息
-        Object principal = principals.getPrimaryPrincipal();
+        User user = (User) principals.getPrimaryPrincipal();
         //2. 利用登录的用户的信息来用户当前用户的角色或权限(可能需要查询数据库)
+        Role role = user.getRole();
+        log.debug("role名:{}", role.getName());
         Set<String> roles = new HashSet<>();
-        roles.add("user");
-        if ("mike".equals(principal)) {
-            roles.add("admin");
-        }
+        roles.add(role.getName());
         //3. 创建 SimpleAuthorizationInfo, 并设置其 roles 属性.
-        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo(roles);
+        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+        simpleAuthorizationInfo.setRoles(roles);
         //4. 返回 SimpleAuthorizationInfo 对象.
         return simpleAuthorizationInfo;
     }

@@ -136,4 +136,9 @@ public class MyServiceImpl implements MyService {
             userDao.deleteById(id);
         }
     }
+
+    @Override
+    public void updateUser(User user) {
+        userDao.updateUser(user.getName(), user.getId());
+    }
 }
