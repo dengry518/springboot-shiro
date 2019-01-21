@@ -40,5 +40,8 @@ public class Node implements Serializable {
     @JsonIgnore
     private List<Role> roles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "node")
+    @JsonIgnore
+    private List<Resource> resources = new ArrayList<>();
 
 }

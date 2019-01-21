@@ -8,15 +8,12 @@ import com.dengry.springbootshiro.valueObject.Json;
 import com.dengry.springbootshiro.valueObject.Node;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Controller
@@ -33,7 +30,8 @@ public class NodeController {
     @RequestMapping("/findLeftTree")
     @ResponseBody
     public List<Node> findLeftTree() {
-        return myService.findLeftTree();
+        List<com.dengry.springbootshiro.entity.Node> nodeList = myService.findLeftTree();
+        return CustomUtil.nodePo2Vo(nodeList);
     }
 
     /**
@@ -47,8 +45,7 @@ public class NodeController {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         Role role = user.getRole();
         List<com.dengry.springbootshiro.entity.Node> nodeList = role.getNodes();
-        List<Node> nodes = CustomUtil.nodePo2Vo(nodeList);
-        return nodes;
+        return CustomUtil.nodePo2Vo(nodeList);
     }
 
     @RequestMapping("/toMenu")

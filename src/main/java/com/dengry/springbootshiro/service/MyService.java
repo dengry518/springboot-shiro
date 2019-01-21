@@ -1,5 +1,6 @@
 package com.dengry.springbootshiro.service;
 
+import com.dengry.springbootshiro.entity.Resource;
 import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.valueObject.Node;
@@ -15,7 +16,7 @@ public interface MyService {
      *
      * @return
      */
-    List<Node> findLeftTree();
+    List<com.dengry.springbootshiro.entity.Node> findLeftTree();
 
     /**
      * 角色不同，导航树不同(查询role_node表)
@@ -29,6 +30,8 @@ public interface MyService {
     Map<String, Object> findRoles(String name, Integer pageIndex, Integer pageSize);
 
     Map<String, Object> findUsers(String username, Integer pageIndex, Integer pageSize);
+
+    Map<String, Object> findResByNode(Integer nodeId, Integer pageIndex, Integer pageSize);
 
     void addNode(Node node);
 
@@ -47,4 +50,8 @@ public interface MyService {
     User findUserById(Integer id);
 
     void updateUser(User user);
+
+    void saveResource(Resource resource);
+
+    void delResById(Integer id);
 }

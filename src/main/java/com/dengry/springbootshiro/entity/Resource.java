@@ -17,6 +17,11 @@ public class Resource implements Serializable {
     private Integer id;
     private String name;
     private String description;
+    private String url;
     @ManyToMany(mappedBy = "resources")
     private Set<Role> roles = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "node_id")
+    private Node node;
 }

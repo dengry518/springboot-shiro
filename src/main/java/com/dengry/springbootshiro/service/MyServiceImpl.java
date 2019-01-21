@@ -1,11 +1,12 @@
 package com.dengry.springbootshiro.service;
 
 import com.dengry.springbootshiro.dao.NodeDao;
+import com.dengry.springbootshiro.dao.ResourceDao;
 import com.dengry.springbootshiro.dao.RoleDao;
 import com.dengry.springbootshiro.dao.UserDao;
+import com.dengry.springbootshiro.entity.Resource;
 import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
-import com.dengry.springbootshiro.utils.CustomUtil;
 import com.dengry.springbootshiro.valueObject.Node;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class MyServiceImpl implements MyService {
     NodeDao nodeDao;
     @Autowired
     RoleDao roleDao;
+    @Autowired
+    ResourceDao resourceDao;
 
     @Override
     public void delNode(Integer id) {
@@ -56,9 +59,8 @@ public class MyServiceImpl implements MyService {
     }
 
     @Override
-    public List<Node> findLeftTree() {
-        List<com.dengry.springbootshiro.entity.Node> nodes = nodeDao.findAll();
-        return CustomUtil.nodePo2Vo(nodes);
+    public List<com.dengry.springbootshiro.entity.Node> findLeftTree() {
+        return nodeDao.findAll();
     }
 
     @Override
@@ -113,6 +115,18 @@ public class MyServiceImpl implements MyService {
         return page2Map(page);
     }
 
+    @Override
+    public Map<String, Object> findResByNode(Integer nodeId, Integer pageIndex, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageIndex, pageSize);
+        Page<Resource> page = resourceDao.findAll((root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get("node").get("id"), nodeId));
+            query.where(predicates.toArray(new Predicate[predicates.size()]));
+            return null;
+        }, pageRequest);
+        return page2Map(page);
+    }
+
     public <T extends Object> Map<String, Object> page2Map(Page<T> page) {
         Map<String, Object> map = new HashMap();
         List<T> content = page.getContent();
@@ -144,5 +158,15 @@ public class MyServiceImpl implements MyService {
     @Override
     public void updateUser(User user) {
         userDao.updateUser(user.getName(), user.getId());
+    }
+
+    @Override
+    public void saveResource(Resource resource) {
+        resourceDao.save(resource);
+    }
+
+    @Override
+    public void delResById(Integer id) {
+        resourceDao.deleteById(id);
     }
 }
