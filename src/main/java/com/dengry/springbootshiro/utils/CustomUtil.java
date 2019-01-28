@@ -3,6 +3,8 @@ package com.dengry.springbootshiro.utils;
 import com.dengry.springbootshiro.valueObject.Node;
 import org.springframework.beans.BeanUtils;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,5 +20,13 @@ public class CustomUtil {
             nodeList.add(n);
         }
         return nodeList;
+    }
+
+    public static boolean isAjax(ServletRequest request) {
+        String header = ((HttpServletRequest) request).getHeader("X-Requested-With");
+        if ("XMLHttpRequest".equalsIgnoreCase(header)) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
     }
 }

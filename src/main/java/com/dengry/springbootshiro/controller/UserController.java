@@ -2,10 +2,12 @@ package com.dengry.springbootshiro.controller;
 
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.service.MyService;
+import com.dengry.springbootshiro.utils.CustomUtil;
 import com.dengry.springbootshiro.valueObject.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Slf4j
@@ -29,8 +33,12 @@ public class UserController {
     }
 
     @RequestMapping("/toUnauthorized")
-    public String toUnauthorized() {
-        return "unauthorized";
+    public String toUnauthorized(HttpServletRequest request) throws UnauthorizedException {
+        if (CustomUtil.isAjax(request)) {
+            throw new UnauthorizedException();
+        } else {
+            return "unauthorized";
+        }
     }
 
     @RequestMapping("/toMain")

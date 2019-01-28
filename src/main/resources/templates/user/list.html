@@ -101,6 +101,8 @@
                             success: function (data) {
                                 if (data.succ) {
                                     grid.reload();
+                                } else {
+                                    mini.alert(data.msg);
                                 }
                             }
                         });

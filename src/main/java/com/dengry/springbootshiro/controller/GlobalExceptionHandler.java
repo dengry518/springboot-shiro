@@ -46,6 +46,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new Json(eName, false, Codes.SHIRO_ERR, "鉴权或授权过程出错", null);
     }
 
+    /**
+     * 用户未登录
+     *
+     * @return
+     */
     @ExceptionHandler(UnauthenticatedException.class)
     @ResponseBody
     public Json page401() {
@@ -55,7 +60,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseBody
     public Json page403() {
-        return new Json("403", false, Codes.UNAUTHZ, "用户没有访问权限", null);
+        Json json = new Json();
+        json.succ(false);
+        json.msg("用户没有访问权限");
+        json.code(403);
+        return json;
     }
 
 
