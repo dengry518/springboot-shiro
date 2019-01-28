@@ -77,7 +77,7 @@ public class CustomReam extends AuthorizingRealm {
         //2.2根据角色去role_resource表中查询resource
         List<Resource> resources = myService.findResesByRoleId(role.getId());
 
-        List<String> permissions = new ArrayList<String>();
+        List<String> permissions = new ArrayList<>();
         for (Resource resource : resources) {
             permissions.add(resource.getPermission());
         }
