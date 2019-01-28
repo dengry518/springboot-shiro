@@ -1,5 +1,6 @@
 package com.dengry.springbootshiro.controller;
 
+import com.dengry.springbootshiro.entity.Resource;
 import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.service.MyService;
@@ -8,11 +9,14 @@ import com.dengry.springbootshiro.valueObject.Json;
 import com.dengry.springbootshiro.valueObject.Node;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -48,6 +52,17 @@ public class NodeController {
         return CustomUtil.nodePo2Vo(nodeList);
     }
 
+    @RequestMapping("/getResIdes")
+    @ResponseBody
+    public String getResIdes(Integer nodeId) {
+        List<Integer> ids = myService.findResIdsByNodeId(nodeId);
+        List<String> newList = new ArrayList<>(ids.size());
+        for (Integer myInt : ids) {
+            newList.add(String.valueOf(myInt));
+        }
+        return StringUtils.join(newList, ',');
+    }
+
     @RequestMapping("/toMenu")
     public String toMenu() {
         return "node/menu";
@@ -81,5 +96,21 @@ public class NodeController {
     @RequestMapping("/toUpdateNode")
     public String toUpdateNode() {
         return "node/updateNode";
+    }
+
+    @RequestMapping("/grantReses")
+    @ResponseBody
+    public Json grantReses(@RequestParam("nodeId") Integer nodeId, @RequestParam("resIds") Integer[] resIds) {
+        com.dengry.springbootshiro.entity.Node node = myService.findNodeById(nodeId);
+        List<Resource> resources = new ArrayList<>();
+        for (Integer resId : resIds) {
+            Resource resource = new Resource();
+            resource.setId(resId);
+            resources.add(resource);
+        }
+        node.setResources(resources);
+
+        myService.saveNode(node);
+        return Json.succ();
     }
 }

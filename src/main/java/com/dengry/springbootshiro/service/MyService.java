@@ -4,6 +4,7 @@ import com.dengry.springbootshiro.entity.Resource;
 import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.valueObject.Node;
+import com.dengry.springbootshiro.valueObject.Perm;
 
 import java.util.List;
 import java.util.Map;
@@ -26,12 +27,22 @@ public interface MyService {
      */
     List<com.dengry.springbootshiro.entity.Node> findLeftTree(Integer roleId);
 
+    List<Resource> findResesByRoleId(Integer roleId);
+    List<Resource> findResesByNodeId(Integer nodeId);
+
+    List<Integer> findResIdsByNodeId(Integer nodeId);
+
+    List<Perm> findPermissiones(Integer[] resIds);
 
     Map<String, Object> findRoles(String name, Integer pageIndex, Integer pageSize);
 
     Map<String, Object> findUsers(String username, Integer pageIndex, Integer pageSize);
 
-    Map<String, Object> findResByNode(Integer nodeId, Integer pageIndex, Integer pageSize);
+    Map<String, Object> findReses(String url, Integer pageIndex, Integer pageSize);
+
+    List<Resource> findResByNode(Integer nodeId);
+
+    com.dengry.springbootshiro.entity.Node findNodeById(Integer id);
 
     void addNode(Node node);
 
@@ -53,5 +64,9 @@ public interface MyService {
 
     void saveResource(Resource resource);
 
+    void saveNode(com.dengry.springbootshiro.entity.Node node);
+
     void delResById(Integer id);
+
+    List<Resource> findResources();
 }

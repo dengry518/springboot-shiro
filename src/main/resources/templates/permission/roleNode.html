@@ -7,13 +7,15 @@
 </head>
 <body>
 
-<div id="datagrid1" class="mini-datagrid" style="width:800px;height:280px;" allowResize="true"
+<div id="datagrid1" class="mini-datagrid" style="width:1200px;height:280px;" allowResize="true"
      url="/role/findRoles" idField="id" multiSelect="true">
     <div property="columns">
         <div field="name" width="120" headerAlign="center" allowSort="true">角色名</div>
-        <div field="nodes" width="200" headerAlign="center" allowSort="true" renderer="onNodesRenderer">拥有菜单节点</div>
-        <div name="action" width="120" headerAlign="center" align="center" renderer="onActionRenderer"
-             cellStyle="padding:0;">分配
+        <div field="nodes" width="350" headerAlign="center" allowSort="true" renderer="onNodesRenderer">拥有菜单节点</div>
+        <div field="resources" width="350" headerAlign="center" allowSort="true" renderer="onResourcesRenderer">拥有资源列表
+        </div>
+        <div name="action" width="250" headerAlign="center" align="center" renderer="onActionRenderer"
+             cellStyle="padding:0;">操作
         </div>
     </div>
 </div>
@@ -27,6 +29,7 @@
     function onActionRenderer(e) {
         var record = e.record;
         var uid = record.id;
+        //获取当前角色拥有菜单节点
         var nodes = record.nodes;
         var nodeIds = [];
         for (var i = 0; i < nodes.length; i++) {
@@ -34,14 +37,24 @@
             nodeIds.push(node.id)
         }
         var s = nodeIds.join();
-        var r='<a href="javascript:grantNodes(\''+uid+'\',\''+s+'\')">分配</a>';
+        //获取当前角色拥有资源
+        var resources = record.resources;
+        var resIds = [];
+        for (var i = 0; i < resources.length; i++) {
+            var resource = resources[i];
+            resIds.push(resource.id);
+        }
+        var m = resIds.join();
+
+        var r = '<a href="javascript:grantNodes(\'' + uid + '\',\'' + s + '\')">选择菜单节点</a>'
+            + '<span class="separator"></span>'
+            + '<a href="javascript:grantReses(\'' + uid + '\',\'' + m + '\')">选择资源</a>';
         return r;
     }
 
 
     function onNodesRenderer(e) {
         var record = e.record;
-        console.log(record.nodes);
         var nodes = record.nodes;
         var nodeNames = [];
         for (var i = 0; i < nodes.length; i++) {
@@ -52,7 +65,53 @@
         return s;
     }
 
-    function grantNodes(roleId,nodeIds) {
+    function onResourcesRenderer(e) {
+        var record = e.record;
+        // console.log(record.resources);
+        var resources = record.resources;
+        var resNames = [];
+        for (var i = 0; i < resources.length; i++) {
+            var resource = resources[i];
+            resNames.push(resource.name);
+        }
+        var s = resNames.join();
+        return s;
+    }
+
+    function grantReses(roleId, resIds) {
+        mini.open({
+            url: "/permission/toRoleRes",
+            title: "分配资源",
+            width: 1300,
+            height: 450,
+            onload: function () {
+                var iframe = this.getIFrameEl();
+                iframe.contentWindow.SetData(resIds);
+            },
+            ondestroy: function (action) {
+                if (action == "ok") {
+                    var iframe = this.getIFrameEl();
+                    var data = iframe.contentWindow.GetData();
+                    data = mini.clone(data);
+                    console.log(data);
+                    var d = {};
+                    d.roleId = roleId;
+                    d.resIds = data;
+                    $.ajax({
+                        url: "/permission/grantReses",
+                        data: d,
+                        success: function (data) {
+                            if (data.succ) {
+                                grid.reload();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function grantNodes(roleId, nodeIds) {
         mini.open({
             url: "/permission/multiSelectTree",
             title: "分配节点",
@@ -67,7 +126,6 @@
                     var iframe = this.getIFrameEl();
                     var data = iframe.contentWindow.GetData();
                     data = mini.clone(data);
-                    console.log(data);
                     var d = {};
                     d.roleId = roleId;
                     d.nodeIds = data.id;

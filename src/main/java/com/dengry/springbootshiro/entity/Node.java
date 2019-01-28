@@ -40,8 +40,9 @@ public class Node implements Serializable {
     @JsonIgnore
     private List<Role> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "node")
-    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "node_resource", joinColumns = {@JoinColumn(name = "node_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "resource_id", referencedColumnName = "id")})
     private List<Resource> resources = new ArrayList<>();
 
 }

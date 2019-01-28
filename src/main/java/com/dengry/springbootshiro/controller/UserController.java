@@ -1,7 +1,5 @@
 package com.dengry.springbootshiro.controller;
 
-import com.dengry.springbootshiro.entity.Node;
-import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.service.MyService;
 import com.dengry.springbootshiro.valueObject.Json;
@@ -13,12 +11,10 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 @Controller
@@ -32,9 +28,14 @@ public class UserController {
         return "user/login";
     }
 
+    @RequestMapping("/toUnauthorized")
+    public String toUnauthorized() {
+        return "unauthorized";
+    }
+
     @RequestMapping("/toMain")
     public String toMain() {
-        return "user/main";
+        return "main";
     }
 
     @PostMapping("/login")

@@ -38,7 +38,7 @@ public class Role implements Serializable {
     @ManyToMany
     @JoinTable(name = "role_resource", joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "resource_id", referencedColumnName = "id")})
-    private Set<Resource> resources = new HashSet<>();
+    private List<Resource> resources = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "role_node", joinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")},

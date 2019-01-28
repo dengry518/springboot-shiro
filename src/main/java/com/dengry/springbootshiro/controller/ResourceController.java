@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -19,16 +20,17 @@ public class ResourceController {
     @Autowired
     MyService myService;
 
-    @RequestMapping("/toList")
-    public String toList() {
-        return "resource/list";
+
+
+    @RequestMapping("/toListAll")
+    public String toListAll() {
+        return "resource/listAll";
     }
 
-    @RequestMapping("/findResByNode")
+    @RequestMapping("/findReses")
     @ResponseBody
-    public Map<String, Object> findResByNode(@RequestParam(value = "nodeId", required = false) Integer nodeId, Integer pageIndex, Integer pageSize) {
-        log.debug("nodeId is {}", nodeId);
-        return myService.findResByNode(nodeId, pageIndex, pageSize);
+    public Map<String, Object> findReses(String url, Integer pageIndex, Integer pageSize) {
+        return myService.findReses(url, pageIndex, pageSize);
     }
 
     @RequestMapping("/toAdd")
@@ -51,4 +53,6 @@ public class ResourceController {
         myService.delResById(id);
         return Json.succ();
     }
+
+
 }

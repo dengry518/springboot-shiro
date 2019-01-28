@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script th:src="@{/miniui/boot.js}" type="text/javascript"></script>
+</head>
+<body>
+<div style="width:800px;">
+    <div class="mini-toolbar" style="border-bottom:0;padding:0px;">
+        <table style="width:100%;">
+            <tr>
+                <td style="width:100%;">
+                    <a class="mini-button" iconCls="icon-add" onclick="add()">增加</a>
+                    <a class="mini-button" iconCls="icon-edit" onclick="edit()">编辑</a>
+                    <a class="mini-button" iconCls="icon-remove" onclick="remove()">删除</a>
+                </td>
+                <td style="white-space:nowrap;">
+                    <input id="url" class="mini-textbox" emptyText="请输入url" style="width:150px;"
+                           onenter="search()"/>
+                    <a class="mini-button" onclick="search()">查询</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div id="datagrid1" class="mini-datagrid" style="width:800px;height:380px;" allowResize="true"
+     url="/resource/findReses" idField="id" multiSelect="true">
+    <div property="columns">
+        <div type="checkcolumn"></div>
+        <div field="name" width="120" headerAlign="center" allowSort="true">资源名</div>
+        <div field="url" width="120" headerAlign="center" allowSort="true">url</div>
+        <div field="permission" width="120" headerAlign="center" allowSort="true">权限字符串</div>
+    </div>
+</div>
+<script>
+    mini.parse();
+
+    var grid = mini.get("datagrid1");
+    //初始查询一次
+    search();
+
+    function search() {
+        var url = mini.get("url").getValue();
+        grid.load({'url': url});
+    }
+
+    function add() {
+        mini.open({
+            url: "/resource/toAdd",
+            title: "新增资源",
+            width: 350,
+            height: 250,
+            onload: function () {
+                var iframe = this.getIFrameEl();
+                var data = {action: "new"};
+                iframe.contentWindow.SetData(data);
+            },
+            ondestroy: function (action) {
+                grid.reload();
+            }
+        });
+    }
+
+    function edit() {
+        var row = grid.getSelected();
+        if (row) {
+            mini.open({
+                url: "/resource/toAdd",
+                title: "修改资源",
+                width: 350,
+                height: 250,
+                onload: function () {
+                    var iframe = this.getIFrameEl();
+                    var data = {
+                        action: "edit",
+                        id: row.id,
+                        url: row.url,
+                        name: row.name,
+                        permission: row.permission,
+                        description: row.description
+                    };
+                    iframe.contentWindow.SetData(data);
+                },
+                ondestroy: function (action) {
+                    grid.reload();
+                }
+            });
+        } else {
+            mini.alert("请选中一条记录");
+        }
+    }
+
+    function remove() {
+        var row = grid.getSelected();
+        if (row) {
+            mini.confirm("确定删除选中记录？", "确定？",
+                function (action) {
+                    if (action == "ok") {
+                        $.ajax({
+                            url: "/resource/delById",
+                            data: {"id": row.id},
+                            success: function (data) {
+                                if (data.succ) {
+                                    grid.reload();
+                                }
+                            }
+                        });
+                    }
+                }
+            );
+        } else {
+            mini.alert("请选中一条记录");
+        }
+    }
+</script>
+</body>
+</html>

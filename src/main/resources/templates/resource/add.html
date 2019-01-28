@@ -8,7 +8,6 @@
 <body>
 <form id="form1" method="post">
     <input name="id" class="mini-hidden"/>
-    <input name="nodeId" class="mini-hidden"/>
     <div style="padding-left:11px;padding-top:15px;">
         <table style="table-layout:fixed;">
             <tr>
@@ -20,7 +19,13 @@
             <tr>
                 <td style="width:80px;">url：</td>
                 <td style="width:150px;">
-                    <input name="url" class="mini-textbox" required="true"/>
+                    <input name="url" class="mini-textbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:80px;">权限字符串：</td>
+                <td style="width:150px;">
+                    <input name="permission" class="mini-textbox" required="true"/>
                 </td>
             </tr>
             <tr>
@@ -52,7 +57,6 @@
 
     function SaveData() {
         var o = form.getData();
-        o['node.id'] = o.nodeId;
         form.validate();
         if (form.isValid() == false) return;
 

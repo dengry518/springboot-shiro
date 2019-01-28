@@ -1,5 +1,6 @@
 package com.dengry.springbootshiro.reams;
 
+import com.dengry.springbootshiro.entity.Resource;
 import com.dengry.springbootshiro.entity.Role;
 import com.dengry.springbootshiro.entity.User;
 import com.dengry.springbootshiro.service.MyService;
@@ -13,6 +14,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -72,9 +74,18 @@ public class CustomReam extends AuthorizingRealm {
         //2.1根据角色去role_node表中查询node
         List<com.dengry.springbootshiro.entity.Node> nodes = myService.findLeftTree(role.getId());
         role.setNodes(nodes);
-        //3. 创建 SimpleAuthorizationInfo, 并设置其 roles 属性.
+        //2.2根据角色去role_resource表中查询resource
+        List<Resource> resources = myService.findResesByRoleId(role.getId());
+
+        List<String> permissions = new ArrayList<String>();
+        for (Resource resource : resources) {
+            permissions.add(resource.getPermission());
+        }
+
+        //3. 创建 SimpleAuthorizationInfo, 并设置其 roles,permissions属性.
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.setRoles(roles);
+        simpleAuthorizationInfo.addStringPermissions(permissions);
         //4. 返回 SimpleAuthorizationInfo 对象.
         return simpleAuthorizationInfo;
     }

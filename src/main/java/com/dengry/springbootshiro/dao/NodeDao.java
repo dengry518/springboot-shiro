@@ -9,6 +9,9 @@ import java.util.List;
 
 @Repository
 public interface NodeDao extends JpaRepository<Node, Integer> {
-    @Query(value = "select node_id from role_node where role_id= ?1",nativeQuery = true)
+    @Query(value = "select node_id from role_node where role_id= ?1", nativeQuery = true)
     List<Integer> findNodeIdByRoleId(Integer roleId);
+
+    @Query(value = "select resource_id from node_resource where node_id=?1", nativeQuery = true)
+    List<Integer> findResIdsByNodeId(Integer nodeId);
 }

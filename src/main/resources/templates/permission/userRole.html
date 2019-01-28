@@ -14,7 +14,7 @@
         <div field="name" width="120" headerAlign="center" allowSort="true">姓名</div>
         <div field="role" width="120" headerAlign="center" allowSort="true" renderer="onUserRoleRenderer">角色</div>
         <div name="action" width="120" headerAlign="center" align="center" renderer="onActionRenderer"
-             cellStyle="padding:0;">分配
+             cellStyle="padding:0;">操作
         </div>
     </div>
 </div>
@@ -42,7 +42,7 @@
         if (role != null) {
             roleId = role.id;
         }
-        var r = '<a href="javascript:grantRole(\'' + uid + '\',\'' + roleId + '\')">分配</a>';
+        var r = '<a href="javascript:grantRole(\'' + uid + '\',\'' + roleId + '\')">选择角色</a>';
         return r;
     }
 

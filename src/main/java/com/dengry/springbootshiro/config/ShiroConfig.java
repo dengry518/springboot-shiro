@@ -1,22 +1,28 @@
 package com.dengry.springbootshiro.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+import com.dengry.springbootshiro.entity.Resource;
 import com.dengry.springbootshiro.reams.CustomReam;
+import com.dengry.springbootshiro.service.MyService;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
+    @Autowired
+    MyService myService;
+
     @Bean
     public Realm realm() {
         CustomReam customReam = new CustomReam();
@@ -57,8 +63,12 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/user/login", "anon");
         filterChainDefinitionMap.put("/user/logout", "logout");
 
-        filterChainDefinitionMap.put("/toAdmin", "roles[admin]");
-        filterChainDefinitionMap.put("/toUser", "roles[user]");
+        List<Resource> resources = myService.findResources();
+        for (Resource resource : resources) {
+            String url = resource.getUrl();
+            String permission="perms["+resource.getPermission()+"]";
+            filterChainDefinitionMap.put(url, permission);
+        }
 
         filterChainDefinitionMap.put("/**", "authc");
         defaultShiroFilterChainDefinition.addPathDefinitions(filterChainDefinitionMap);

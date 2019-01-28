@@ -1,4 +1,4 @@
 shiro:
   loginUrl: /user/toLogin         # 用户未登录时跳转的请求路径
-  unauthorizedUrl: /toUnauthorized  # 用户没有访问权限时跳转的请求路径
+  unauthorizedUrl: /user/toUnauthorized  # 用户没有访问权限时跳转的请求路径
 
