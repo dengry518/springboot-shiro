@@ -60,11 +60,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseBody
     public Json page403() {
-        Json json = new Json();
-        json.succ(false);
-        json.msg("用户没有访问权限");
-        json.code(403);
-        return json;
+        return new Json("403", false, Codes.SHIRO_ERR, "用户没有访问权限", null);
     }
 
 
